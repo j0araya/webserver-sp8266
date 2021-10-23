@@ -1,0 +1,41 @@
+<html>
+
+<head>
+</head>
+
+<body onload="javascript:init()">
+  <textarea id="rxConsole"></textarea>
+  <input type="text" id="txInput" onkeypress="if (event.keyCode === 13) sendInput()" />
+</body>
+<script>
+  var Socket;
+  function init() {
+    Socket = new WebSocket('ws://' + window.location.hostname + ':81/');
+    Socket.onmessage = function (event) {
+      document.getElementById('rxConsole').value += event.data;
+    }
+  }
+  function sendInput() {
+    Socket.send(document.getElementById('txInput').value);
+    document.getElementById('txInput').value = '';
+  }
+</script>
+<script>
+  function myFunction() {
+    console.log("button was clicked!");
+    var xhr = new XMLHttpRequest();
+    var url = "/ledstate";
+
+    xhr.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        document.getElementById("led-state").innerHTML = this.responseText;
+      }
+    };
+
+    xhr.open("GET", url, true);
+    xhr.send();
+  };
+  document.addEventListener('DOMContentLoaded', myFunction, false);
+</script>
+
+</html>
